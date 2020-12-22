@@ -4,14 +4,16 @@ from typing import Dict, List
 from .key_definition import KeyDefinition
 from ..helpers import default
 
+
 @dataclass
 class TableDefinition:
-    arn: str = None
     name: str = None
     attributes: Dict[str, str] = default(dict)
     primary_key: KeyDefinition = None
     gsi: Dict[str, KeyDefinition] = default(dict)
     lsi: Dict[str, KeyDefinition] = default(dict)
+    arn: str = None
+    status: str = None
 
     @property
     def key_attributes(self) -> List[str]:
@@ -20,7 +22,7 @@ class TableDefinition:
         for key in self.secondary_keys:
             attrs += key.attributes
 
-        return attrs
+        return list(set(attrs))
 
     @property
     def gsi_keys(self) -> List[KeyDefinition]:
@@ -48,6 +50,11 @@ class TableDefinition:
     def keys(self) -> List[KeyDefinition]:
         return [self.primary_key] + self.secondary_keys
 
+    def get_secondary_key(self, name):
+        if name in self.lsi:
+            return self.lsi[name]
+        return self.gsi[name]
+
     def get_projected_attributes(self, index) -> List[str]:
         key = None
 
@@ -58,7 +65,9 @@ class TableDefinition:
 
         if key.projection == "ALL":
             return list(self.attributes.keys())
-        elif key.projection == "KEYS_ONLY":
-            return [self.primary_key.partition_key] + key.attributes
-        elif key.projection == "INCLUDE":
-            return [self.primary_key.partition_key] + key.attributes + key.include
+        else:
+            base_keys = [self.primary_key.partition_key]
+            if key.projection == "KEYS_ONLY":
+                return base_keys + key.attributes
+            elif key.projection == "INCLUDE":
+                return base_keys + key.attributes + key.include

@@ -10,12 +10,15 @@ from ..constants import SET_SUBTYPES, ENCODING
 class AutoMarshaller(Marshaller):
     """
         This is the default Marshaller implementation.
-        This implementation uses datatype checking to infer DynamoDB attribute types.
 
-        This implementation can automatically pack appropriate lists into set types if enabled.
-        For example, if a value to be packed is a list of strings, this will be stored as a String Set.
+        This implementation uses datatype checking to infer DynamoDB
+        attribute types. This implementation can automatically pack
+        appropriate lists into set types if enabled. For example, if
+        a value to be packed is a list of strings, this will be stored
+        as a String Set.
 
-        Additionally, the casting of DynamoDB Numbers to Python types is customisable.
+        Additionally, the casting of DynamoDB Numbers to Python types is
+        customisable.
     """
 
     _DEFAULT_CLASSIFIERS = {
@@ -28,26 +31,35 @@ class AutoMarshaller(Marshaller):
         "BOOL": autoclassifier(bool)
     }
 
-    def __init__(self, auto_set_detect: bool = True, number_cast = float):
+    def __init__(self, auto_set_detect: bool = True, number_cast=float):
         self.auto_set_detect = auto_set_detect
         self.number_cast = number_cast
 
     def _detect_default_type(self, value):
         for typekey, classifier in self._DEFAULT_CLASSIFIERS.items():
-                if classifier(value):
-                    return typekey
+            if classifier(value):
+                return typekey
 
     def _detect_set_type(self, value: list):
         last_subtype = None
+
+        def is_not_valid_set(subtype):
+            is_not_set_type = subtype not in SET_SUBTYPES
+            is_not_first = last_subtype is not None
+            is_not_match = subtype != last_subtype
+
+            return is_not_set_type or (is_not_first and is_not_match)
+
         for item in value:
             subtype = self._detect_attribute_type(item, True)
-            if subtype not in SET_SUBTYPES or (last_subtype is not None and subtype != last_subtype):
+            if is_not_valid_set(subtype):
                 return "L"
             last_subtype = subtype
         return f"{last_subtype}S"
 
     def _detect_attribute_type(self, value, override_set_detect=False):
-        if not override_set_detect and self.auto_set_detect and isinstance(value, list):
+        should_check_set = not override_set_detect and self.auto_set_detect
+        if should_check_set and isinstance(value, list):
             return self._detect_set_type(value)
         return self._detect_default_type(value)
 
@@ -58,7 +70,11 @@ class AutoMarshaller(Marshaller):
         return str(value)
 
     def pack_number(self, value: Number):
-        return str(value)
+        try:
+            if int(value) == value:
+                value = int(value)
+        finally:
+            return str(value)
 
     def pack_binary(self, value: bytes):
         return b64encode(value).decode(ENCODING)

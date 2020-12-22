@@ -10,6 +10,11 @@ def set_optional_arg(name, val, args):
         args[name] = val
 
 
+def set_arg_if_not_empty(name, val, args):
+    if len(val) > 0:
+        args[name] = val
+
+
 def first_kvp(dct: dict):
     return next(iter(dct.items()))
 

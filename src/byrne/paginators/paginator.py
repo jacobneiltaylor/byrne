@@ -1,19 +1,20 @@
 from abc import ABC, abstractmethod
 from concurrent.futures import ThreadPoolExecutor
-from typing import Callable
 
-from boto3_type_annotations import dynamodb
 
 from ..table import Table
 from ..constants import DEFAULT_PAGE
 
-PAGE_FUNC = Callable[[dynamodb.Client, str], dict]  # def page_func(client, last_evaluated_key=None) -> {'Items':{...}}
-COND_FUNC = Callable[[int], bool]  # def condition_func(current_item_length) -> true/false
-
 
 class Paginator(ABC):
-    def __init__(self, table: Table, base_args: dict, page_length: int = DEFAULT_PAGE, preload=True):
-        self._table = table
+    def __init__(
+        self,
+        table: Table,
+        base_args: dict,
+        page_length: int = DEFAULT_PAGE,
+        preload=True
+    ):
+        self.table = table
         self._items = []
         self._eof = False
         self._executor = ThreadPoolExecutor()
@@ -70,7 +71,7 @@ class Paginator(ABC):
         while not self._eof and len(self._items) > 0:
             if not self._eof and self.should_page and self.can_page:
                 self.trigger_page()
-            
+
             if self._page.done or len(self._items) == 0:
                 self.ingest_page()
 

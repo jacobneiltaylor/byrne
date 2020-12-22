@@ -1,0 +1,63 @@
+{
+    "AttributeDefinitions": [
+        {
+            "AttributeName": "post_name",
+            "AttributeType": "S"
+        },
+        {
+            "AttributeName": "revision_id",
+            "AttributeType": "N"
+        },
+        {
+            "AttributeName": "tag",
+            "AttributeType": "S"
+        },
+        {
+            "AttributeName": "author",
+            "AttributeType": "S"
+        }
+    ],
+    "KeySchema": [
+        {
+            "AttributeName": "post_name",
+            "KeyType": "HASH"
+        },
+        {
+            "AttributeName": "revision_id",
+            "KeyType": "RANGE"
+        }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "LocalSecondaryIndexes": [
+        {
+            "IndexName": "tag_index",
+            "KeySchema": [
+                {
+                    "AttributeName": "post_name",
+                    "KeyType": "HASH"
+                },
+                {
+                    "AttributeName": "tag",
+                    "KeyType": "RANGE"
+                }
+            ],
+            "Projection": {
+                "ProjectionType": "ALL"
+            }
+        }
+    ],
+    "GlobalSecondaryIndexes": [
+        {
+            "IndexName": "author_index",
+            "KeySchema": [
+                {
+                    "AttributeName": "author",
+                    "KeyType": "HASH"
+                }
+            ],
+            "Projection": {
+                "ProjectionType": "ALL"
+            }
+        }
+    ]
+}

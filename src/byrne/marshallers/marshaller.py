@@ -3,6 +3,7 @@ from numbers import Number
 
 from ..helpers import first_kvp
 
+
 class Marshaller(ABC):
     """
         A Marshaller is responsible for translating between

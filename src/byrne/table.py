@@ -3,6 +3,7 @@ from .dynamodb import DynamoDb
 from .datastructures import TableDefinition
 from .constants import DEFAULT_SELECT
 
+
 class Table:
     """
         A low-level interface for interacting with DynamoDB Tables
@@ -11,8 +12,8 @@ class Table:
         self,
         interface: DynamoDb,
         definition: TableDefinition,
-        consistent_reads = True,
-        read_limit = 50
+        consistent_reads=True,
+        read_limit=50
     ):
         self.definition = definition
         self.dynamodb = interface
@@ -58,8 +59,8 @@ class Table:
         start=None,
         index: str = None,
         filter_exp: str = None,
-        attr_names: dict = None,
         projection_exp: str = None,
+        attr_names: dict = None,
         attr_values: dict = None
     ):
         scan_args = {
@@ -77,12 +78,79 @@ class Table:
 
         return self.dynamodb.data_client.scan(**scan_args)
 
-    #def get_item(self, key, projection_exp: str = None, )
+    def get_item(
+        self,
+        key: dict,
+        projection_exp: str = None,
+        attr_names: dict = None
+    ):
+        get_args = {
+            "TableName": self.name,
+            "ConsistentRead": self.consistent_reads,
+            "Key": key,
+        }
 
-    #def put_item(self, record):
-    #    put_args()
-    #    self.dynamodb.data_client.put_item()
+        set_optional_arg("ExpressionAttributeNames", attr_names, get_args)
+        set_optional_arg("ProjectionExpression", projection_exp, get_args)
+
+        return self.dynamodb.data_client.get_item(**get_args)
+
+    def put_item(
+        self,
+        item: dict,
+        condition_exp: str = None,
+        attr_names: dict = None,
+        attr_values: dict = None
+    ):
+        put_args = {
+            "TableName": self.name,
+            "Item": item
+        }
+
+        set_optional_arg("ConditionExpression", condition_exp, put_args)
+        set_optional_arg("ExpressionAttributeNames", attr_names, put_args)
+        set_optional_arg("ExpressionAttributeValues", attr_values, put_args)
+
+        self.dynamodb.data_client.put_item(**put_args)
+
+    def delete_item(
+        self,
+        key: dict,
+        condition_exp: str = None,
+        attr_names: dict = None,
+        attr_values: dict = None
+    ):
+        delete_args = {
+            "TableName": self.name,
+            "Key": key,
+        }
+
+        set_optional_arg("ConditionExpression", condition_exp, delete_args)
+        set_optional_arg("ExpressionAttributeNames", attr_names, delete_args)
+        set_optional_arg("ExpressionAttributeValues", attr_values, delete_args)
+
+        self.dynamodb.data_client.delete_item(**delete_args)
+
+    def update_item(
+        self,
+        key: dict,
+        update_exp: str,
+        condition_exp: str = None,
+        attr_names: dict = None,
+        attr_values: dict = None
+    ):
+        update_args = {
+            "TableName": self.name,
+            "Key": key,
+            "UpdateExpression": update_exp,
+        }
+
+        set_optional_arg("ConditionExpression", condition_exp, update_args)
+        set_optional_arg("ExpressionAttributeNames", attr_names, update_args)
+        set_optional_arg("ExpressionAttributeValues", attr_values, update_args)
+
+        self.dynamodb.data_client.update_item(**update_args)
 
     @classmethod
-    def get(cls, interface: DynamoDb, name: str):
+    def get_table(cls, interface: DynamoDb, name: str):
         return cls(interface, interface.get_table_definition(name))

@@ -1,14 +1,13 @@
-import base64
 from typing import Dict
 from dataclasses import dataclass
-from collections import defaultdict
 
-from .datastructures import TableDefinition, KeyDefinition
+from .datastructures import KeyDefinition
 from .table import Table
 from .marshallers import Marshaller, AutoMarshaller
 from .recordmaps import RecordMap
-from .paginators import QueryPaginator, ScanPaginator, Paginator
-from .constants import DEFAULT_SELECT
+from .paginators import QueryPaginator, ScanPaginator, Paginator  # noqa
+from .constants import DEFAULT_SELECT  # noqa
+
 
 class TableView:
     """
@@ -52,7 +51,11 @@ class TableView:
 
     def _postprocess_read_record(self, record: dict):
         if self.marshaller is not None:
-            record = {k: self.marshaller.unpack_attribute(v) for k, v in record.items()}
+            record = {
+                k: self.marshaller.unpack_attribute(v)
+                for k, v
+                in record.items()
+            }
         if self.recordmap is not None:
             return self.recordmap.map_record(record)
         return record
@@ -61,7 +64,9 @@ class TableView:
         if self.recordmap is not None:
             data = self.recordmap.unmap_object(data)
         if self.marshaller is not None:
-            return {k: self.marshaller.pack_attribute(v) for k, v in data.items()}
+            return {
+                k: self.marshaller.pack_attribute(v) for k, v in data.items()
+            }
         return data
 
     @classmethod
@@ -71,6 +76,20 @@ class TableView:
     def query(self, key_condition_exp, **kwargs) -> Paginator:
         kwargs["key_condition_exp"] = key_condition_exp
 
-        
-    
+    def _get_primary_key_selector(self, value, sort=False):
+        primary_key = self.table.definition.primary_key
+        key_name = primary_key.partition_key
 
+        if sort:
+            assert primary_key.is_sortable
+            key_name = primary_key.sort_key
+
+        key_type = self.table.definition.attributes[key_name]
+
+        return {key_name: {key_type: value}}
+
+    def _build_key_args(self, partition_key, sort_key):
+        key_args = self._get_primary_key_selector(partition_key)
+        if sort_key is not None:
+            key_args.update(self._get_primary_key_selector(sort_key, True))
+        return key_args

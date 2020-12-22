@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+
 class RecordMap(ABC):
     @abstractmethod
     def map_record(self, record: dict):
