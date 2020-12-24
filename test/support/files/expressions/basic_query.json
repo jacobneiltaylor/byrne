@@ -1,0 +1,9 @@
+{
+    "expression": "#I = :i",
+    "names": {
+        "#I": "id"
+    },
+    "values": {
+        ":i": {"S": "4"}
+    }
+}

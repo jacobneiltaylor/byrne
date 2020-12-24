@@ -1,0 +1,9 @@
+{
+    "expression": "#N = :n",
+    "names": {
+        "#N": "name"
+    },
+    "values": {
+        ":n": {"S": "Asami Sato"}
+    }
+}

@@ -1,0 +1,82 @@
+[
+    {
+        "id": {
+            "S": "0"
+        },
+        "name": {
+            "S": "Tommy Vercetti"
+        }
+    },
+    {
+        "id": {
+            "S": "1"
+        },
+        "name": {
+            "S": "Carl Johnson"
+        }
+    },
+    {
+        "id": {
+            "S": "2"
+        },
+        "name": {
+            "S": "Lucius Fox"
+        }
+    },
+    {
+        "id": {
+            "S": "3"
+        },
+        "name": {
+            "S": "Harleen Quinzel"
+        }
+    },
+    {
+        "id": {
+            "S": "4"
+        },
+        "name": {
+            "S": "Bail Organa"
+        }
+    },
+    {
+        "id": {
+            "S": "5"
+        },
+        "name": {
+            "S": "Sabine Wren"
+        }
+    },
+    {
+        "id": {
+            "S": "6"
+        },
+        "name": {
+            "S": "Asami Sato"
+        }
+    },
+    {
+        "id": {
+            "S": "7"
+        },
+        "name": {
+            "S": "Suyin Beifong"
+        }
+    },
+    {
+        "id": {
+            "S": "8"
+        },
+        "name": {
+            "S": "Delia Ketchum"
+        }
+    },
+    {
+        "id": {
+            "S": "9"
+        },
+        "name": {
+            "S": "Samuel Oak"
+        }
+    }
+]

@@ -18,7 +18,7 @@ MARSHAL_UNPACKED_DECIMAL = {
 
 MARSHAL_UNPACKED = {
     "a": "123",
-    "b": 123,
+    "b": float(123),
     "c": b"123",
     "d": ["1", "2", "3"],
     "e": [float(1), float(2), float(3)],
@@ -32,8 +32,17 @@ MARSHAL_UNPACKED = {
 
 MARSHAL_PACKED = helpers.load_attr("packed")
 
-MARSHAL_PACKED_NO_AUTOSET = helpers.load_attr("packed_no_autoset")
+MARSHAL_PACKED_LIST = helpers.load_attr("packed_lists")
 
 TABLE_RECORD_BASIC = helpers.load_record("basic")
+TABLE_RECORD_BASIC_UPDATED = helpers.load_record("basic_updated")
 
 TABLE_KEY_BASIC = helpers.load_key("basic")
+
+UPDATE_EXP_BASIC = helpers.load_expression("basic_update")
+
+QUERY_EXP_BASIC = helpers.load_expression("basic_query")
+
+SCAN_FILTER_EXP_BASIC = helpers.load_expression("basic_scan")
+
+RECORD_SET_BASIC = helpers.load_record_set("basic")

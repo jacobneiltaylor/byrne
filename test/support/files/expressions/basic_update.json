@@ -1,0 +1,10 @@
+{
+    "expression": "SET age = age + :i, #N = :n",
+    "names": {
+        "#N": "name"
+    },
+    "values": {
+        ":n": {"S": "Jane Doe"},
+        ":i": {"N": "1"}
+    }
+}

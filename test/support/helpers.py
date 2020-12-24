@@ -39,8 +39,17 @@ def load_record(name):
     return load_test_json_file(constants.RECORDS_DIR, name)
 
 
+def load_record_set(name):
+    return load_test_json_file(constants.RECORD_SETS_DIR, name)
+
+
 def load_key(name):
     return load_test_json_file(constants.KEYS_DIR, name)
+
+
+def load_expression(name):
+    data = load_test_json_file(constants.EXP_DIR, name)
+    return (data["expression"], data["names"], data["values"])
 
 
 def make_params(data: dict):
@@ -90,3 +99,8 @@ def get_byrne_client(aws):
 
 def get_byrne_table(aws, name) -> Table:
     return Table.get_table(get_byrne_client(aws), name)
+
+
+def preload_table(table: Table, records):
+    for record in records:
+        table.put_item(record)

@@ -92,4 +92,4 @@ class AutoMarshaller(Marshaller):
         return b64decode(value.encode(ENCODING))
 
     def unpack_bool(self, value):
-        raise bool(value)
+        return bool(value)

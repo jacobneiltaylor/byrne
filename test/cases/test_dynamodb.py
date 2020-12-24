@@ -85,3 +85,11 @@ def test_complex_table_create_delete(table_id, aws):
     client.wait_for_active(table)
     client.delete_table(table)
     client.wait_for_deletion(table)
+
+
+def test_list_tables(aws, ddb_table):
+    """
+        Test listing of tables
+    """
+    client = helpers.get_byrne_client(aws)
+    assert ddb_table in client.list_tables()

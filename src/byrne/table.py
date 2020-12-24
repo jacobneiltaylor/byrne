@@ -55,7 +55,6 @@ class Table:
     def scan(
         self,
         select: str = DEFAULT_SELECT,
-        scan_forward: bool = True,
         start=None,
         index: str = None,
         filter_exp: str = None,
@@ -65,8 +64,7 @@ class Table:
     ):
         scan_args = {
             "TableName": self.name,
-            "Select": select,
-            "ScanIndexForward": scan_forward
+            "Select": select
         }
 
         set_optional_arg("ExclusiveStartKey", start, scan_args)
