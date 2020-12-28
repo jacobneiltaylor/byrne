@@ -93,3 +93,9 @@ def test_list_tables(aws, ddb_table):
     """
     client = helpers.get_byrne_client(aws)
     assert ddb_table in client.list_tables()
+
+
+def test_attr_name_check():
+    assert not DynamoDb.requires_exp_attr_name("arandomattr")
+    assert DynamoDb.requires_exp_attr_name("name")  # resvd word
+    assert DynamoDb.requires_exp_attr_name("first.name")  # contains period

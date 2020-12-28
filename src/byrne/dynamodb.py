@@ -7,6 +7,7 @@ from boto3_type_annotations import dynamodb
 
 from .helpers import set_arg_if_not_empty
 from .datastructures import TableDefinition, KeyDefinition
+from .constants import DYNAMODB_RESVD_WORDS
 
 
 class DynamoDb:
@@ -144,3 +145,12 @@ class DynamoDb:
         if self.dax is not None:
             return self.dax
         return self.client
+
+    @staticmethod
+    def requires_exp_attr_name(attr_name: str):
+        assert len(attr_name) >= 1
+
+        if attr_name.upper() in DYNAMODB_RESVD_WORDS or "." in attr_name:
+            return True
+
+        return False

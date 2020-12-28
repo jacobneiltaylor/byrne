@@ -34,15 +34,16 @@ MARSHAL_PACKED = helpers.load_attr("packed")
 
 MARSHAL_PACKED_LIST = helpers.load_attr("packed_lists")
 
-TABLE_RECORD_BASIC = helpers.load_record("basic")
-TABLE_RECORD_BASIC_UPDATED = helpers.load_record("basic_updated")
+TABLE_ITEM_BASIC = helpers.load_item("basic")
+TABLE_ITEM_BASIC_UPDATED = helpers.load_item("basic_updated")
 
 TABLE_KEY_BASIC = helpers.load_key("basic")
 
-UPDATE_EXP_BASIC = helpers.load_expression("basic_update")
+UPDATE_EXP_BASIC = helpers.load_raw_expression("basic_update")
+QUERY_EXP_BASIC = helpers.load_raw_expression("basic_query")
+SCAN_FILTER_EXP_BASIC = helpers.load_raw_expression("basic_scan")
 
-QUERY_EXP_BASIC = helpers.load_expression("basic_query")
+EXP_OBJ_SORTABLE_GTE = helpers.load_expression("sortable_gte")
 
-SCAN_FILTER_EXP_BASIC = helpers.load_expression("basic_scan")
-
-RECORD_SET_BASIC = helpers.load_record_set("basic")
+ITEM_SET_BASIC = helpers.load_item_set("basic")
+ITEM_SET_SORTABLE = helpers.load_item_set("sortable")

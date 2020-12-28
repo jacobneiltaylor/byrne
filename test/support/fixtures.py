@@ -80,9 +80,10 @@ def ddb_table(request: FixtureRequest, table_id, aws):
     """
         Returns a name of a ephemeral DynamoDB table
     """
-    function_name = request.function.__name__
+    function = request.function
+    function_name = function.__name__
     table = helpers.get_ephemeral_table_name(table_id, function_name)
-    args = helpers.get_function_table_data(function_name)
+    args = helpers.get_function_table_data(function)
     args["TableName"] = table
     ddb = helpers.get_byrne_client(aws)
     ddb.client.create_table(**args)

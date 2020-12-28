@@ -103,8 +103,12 @@ class Marshaller(ABC):
             "BOOL": self.unpack_bool
         }[attribute_type](attribute_value)
 
-    def pack_attribute(self, value):
-        attribute_type = self.detect_attribute_type(value)
+    def pack_attribute(self, value, force_type=None):
+        attribute_type = force_type
+
+        if force_type is None:
+            attribute_type = self.detect_attribute_type(value)
+
         attribute_value = {
             "S": self.pack_string,
             "N": self.pack_number,

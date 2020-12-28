@@ -1,0 +1,11 @@
+{
+    "expression": "#gid = :gid and #mid >= :mid_min",
+    "name_mappings": {
+        "gid": "group_id",
+        "mid": "member_id"
+    },
+    "value_mappings": {
+        "gid": 9,
+        "mid_min": 4
+    }
+}

@@ -7,7 +7,8 @@ import hashlib
 import pytest
 import deepdiff
 
-from byrne import DynamoDb, Table
+from byrne import DynamoDb, Table, TableView
+from byrne.datastructures import Expression
 
 from . import constants
 
@@ -35,12 +36,12 @@ def load_attr(name):
     return load_test_json_file(constants.ATTRS_DIR, name)
 
 
-def load_record(name):
-    return load_test_json_file(constants.RECORDS_DIR, name)
+def load_item(name):
+    return load_test_json_file(constants.ITEMS_DIR, name)
 
 
-def load_record_set(name):
-    return load_test_json_file(constants.RECORD_SETS_DIR, name)
+def load_item_set(name):
+    return load_test_json_file(constants.ITEM_SETS_DIR, name)
 
 
 def load_key(name):
@@ -48,7 +49,11 @@ def load_key(name):
 
 
 def load_expression(name):
-    data = load_test_json_file(constants.EXP_DIR, name)
+    return Expression(**load_test_json_file(constants.EXP_DIR, name))
+
+
+def load_raw_expression(name):
+    data = load_test_json_file(constants.RAW_EXP_DIR, name)
     return (data["expression"], data["names"], data["values"])
 
 
@@ -81,11 +86,10 @@ def get_table_data(name):
     return load_test_json_file(constants.TABLES_DIR, name)
 
 
-def get_function_table_data(function_name):
-    try:
-        return get_table_data(function_name)
-    except FileNotFoundError:
-        return get_table_data("default")
+def get_function_table_data(function):
+    if hasattr(function, "table"):
+        return get_table_data(function.table)
+    return get_table_data("default")
 
 
 def assert_dict_eq(dct_a, dct_b):
@@ -101,6 +105,17 @@ def get_byrne_table(aws, name) -> Table:
     return Table.get_table(get_byrne_client(aws), name)
 
 
-def preload_table(table: Table, records):
-    for record in records:
-        table.put_item(record)
+def get_byrne_table_view(aws, name) -> TableView:
+    return TableView.get_default_table_view(get_byrne_table(aws, name))
+
+
+def preload_table(table: Table, items):
+    for item in items:
+        table.put_item(item)
+
+
+def use_table(table):
+    def decorator(func):
+        func.table = table
+        return func
+    return decorator

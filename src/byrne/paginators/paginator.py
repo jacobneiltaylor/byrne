@@ -22,6 +22,7 @@ class Paginator(ABC):
         self._last_key = None
         self._base_args = base_args
         self._page_length = page_length
+
         if preload:
             self.trigger_page()
             self.ingest_page()
@@ -41,6 +42,14 @@ class Paginator(ABC):
         args = {"start": self._last_key}
         args.update(self._base_args)
         return args
+
+    @property
+    def new_page_ready(self):
+        return self._page is not None and self._page.done
+
+    @property
+    def need_to_wait_for_page(self):
+        return len(self._items) == 0
 
     @abstractmethod
     def on_page(self):
@@ -65,14 +74,14 @@ class Paginator(ABC):
         self._items = new_items + self._items
 
     def __iter__(self):
-        if self._eof:
-            raise RuntimeError("Paginator called after EOF")
+        if self._eof and len(self._items) == 0:
+            raise RuntimeError("Paginator is empty")
 
-        while not self._eof and len(self._items) > 0:
+        while (not self._eof) or len(self._items) > 0:
             if not self._eof and self.should_page and self.can_page:
                 self.trigger_page()
 
-            if self._page.done or len(self._items) == 0:
+            if self.new_page_ready or self.need_to_wait_for_page:
                 self.ingest_page()
 
             yield self._items.pop()

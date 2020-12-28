@@ -2,11 +2,12 @@ from byrne.constants import ENCODING  # noqa
 
 FILE_DIR = "files"
 ATTRS_DIR = "attributes"
-RECORDS_DIR = "records"
-RECORD_SETS_DIR = "record_sets"
+ITEMS_DIR = "items"
+ITEM_SETS_DIR = "item_sets"
 TABLES_DIR = "tables"
 KEYS_DIR = "keys"
 EXP_DIR = "expressions"
+RAW_EXP_DIR = "raw_expressions"
 
 EPHEMERAL_TABLE_PREFIX = "ByrneTestTempRW"
 

@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 
 
-class RecordMap(ABC):
+class ObjectMap(ABC):
     @abstractmethod
-    def map_record(self, record: dict):
+    def map_item(self, item: dict):
         raise NotImplementedError
 
     @abstractmethod

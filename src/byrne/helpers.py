@@ -7,11 +7,11 @@ def default(factory):
 
 def set_optional_arg(name, val, args):
     if val is not None:
-        args[name] = val
+        set_arg_if_not_empty(name, val, args)
 
 
 def set_arg_if_not_empty(name, val, args):
-    if len(val) > 0:
+    if not (isinstance(val, list) or isinstance(val, dict)) or len(val) > 0:
         args[name] = val
 
 
