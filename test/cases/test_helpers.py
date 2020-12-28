@@ -41,4 +41,3 @@ def test_autoclassifier():
     assert byrne.helpers.autoclassifier(bool)(False)
     assert byrne.helpers.autoclassifier(str)("foo")
     assert not byrne.helpers.autoclassifier(list)(123)
-
