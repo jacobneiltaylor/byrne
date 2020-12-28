@@ -17,3 +17,4 @@ deploy:
   edge: true
   on:
     branch: main
+    python: "3.9"
