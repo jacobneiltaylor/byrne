@@ -20,6 +20,8 @@ def test_table_view_scan(aws, ddb_table):
     view = helpers.get_byrne_table_view(aws, ddb_table)
     helpers.preload_table(view.table, data.ITEM_SET_SORTABLE)
 
+    view.table.read_limit = 25
+
     results = list(view.scan())
 
     assert len(results) == 100

@@ -13,7 +13,7 @@ class Table:
         interface: DynamoDb,
         definition: TableDefinition,
         consistent_reads=True,
-        read_limit=50
+        read_limit=None
     ):
         self.definition = definition
         self.dynamodb = interface
@@ -43,6 +43,7 @@ class Table:
             "ScanIndexForward": scan_forward
         }
 
+        set_optional_arg("Limit", self.read_limit, query_args)
         set_optional_arg("ExclusiveStartKey", start, query_args)
         set_optional_arg("IndexName", index, query_args)
         set_optional_arg("FilterExpression", filter_exp, query_args)
@@ -67,6 +68,7 @@ class Table:
             "Select": select
         }
 
+        set_optional_arg("Limit", self.read_limit, scan_args)
         set_optional_arg("ExclusiveStartKey", start, scan_args)
         set_optional_arg("IndexName", index, scan_args)
         set_optional_arg("FilterExpression", filter_exp, scan_args)
