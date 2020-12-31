@@ -1,7 +1,7 @@
 from numbers import Number
+from base64 import b64encode, b64decode
 
 from .marshaller import Marshaller
-from base64 import b64encode, b64decode
 
 from ..helpers import autoclassifier
 from ..constants import SET_SUBTYPES, ENCODING

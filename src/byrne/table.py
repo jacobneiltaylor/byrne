@@ -152,5 +152,5 @@ class Table:
         self.dynamodb.data_client.update_item(**update_args)
 
     @classmethod
-    def get_table(cls, interface: DynamoDb, name: str):
-        return cls(interface, interface.get_table_definition(name))
+    def get_table(cls, client: DynamoDb, name: str):
+        return cls(client, client.get_table_definition(name))

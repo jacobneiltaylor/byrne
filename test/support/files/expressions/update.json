@@ -1,0 +1,9 @@
+{
+    "expression": "SET #age = #age + :increment",
+    "name_mappings": {
+        "age": "age"
+    },
+    "value_mappings": {
+        "increment": 1
+    }
+}

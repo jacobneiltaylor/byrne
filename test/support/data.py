@@ -44,6 +44,7 @@ QUERY_EXP_BASIC = helpers.load_raw_expression("basic_query")
 SCAN_FILTER_EXP_BASIC = helpers.load_raw_expression("basic_scan")
 
 EXP_OBJ_SORTABLE_GTE = helpers.load_expression("sortable_gte")
+EXP_OBJ_UPDATE = helpers.load_expression("update")
 
 ITEM_SET_BASIC = helpers.load_item_set("basic")
 ITEM_SET_SORTABLE = helpers.load_item_set("sortable")

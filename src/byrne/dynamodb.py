@@ -3,7 +3,6 @@ from typing import List
 
 from boto3 import Session
 from amazondax import AmazonDaxClient
-from boto3_type_annotations import dynamodb
 
 from .helpers import set_arg_if_not_empty
 from .datastructures import TableDefinition, KeyDefinition
@@ -11,13 +10,9 @@ from .constants import DYNAMODB_RESVD_WORDS
 
 
 class DynamoDb:
-    def __init__(self, session: Session, dax_endpoints: List[str] = None):
-        self.session = session
-        self.client = session.client("dynamodb")
-        self.dax = None
-
-        if dax_endpoints is not None:
-            self.dax = AmazonDaxClient(session, endpoints=dax_endpoints)
+    def __init__(self, client, dax: AmazonDaxClient = None):
+        self.client = client
+        self.dax = dax
 
     def list_tables(self) -> List[str]:
         return self.client .list_tables()["TableNames"]
@@ -138,10 +133,17 @@ class DynamoDb:
 
     @classmethod
     def get_default_client(cls, dax_endpoints=None):
-        return cls(Session(), dax_endpoints)
+        return cls.get_client_from_session(Session())
+
+    @classmethod
+    def get_client_from_session(cls, session: Session, dax_endpoints=None):
+        dax = None
+        if dax_endpoints is not None:
+            dax = AmazonDaxClient(session, endpoints=dax_endpoints)
+        return cls(session.client("dynamodb"), dax)
 
     @property
-    def data_client(self) -> dynamodb.Client:
+    def data_client(self):
         if self.dax is not None:
             return self.dax
         return self.client

@@ -24,10 +24,29 @@ def session_timestamp():
 
 
 @fixture(scope="session")
-def aws(session_id):
+def using_ddb_local():
     """
-        Returns a Boto3 Session object using an assumed role
+        Returns a timestamp for the test session
     """
+    local = os.environ.get(constants.DYNAMODB_LOCAL_ENVVAR, None)
+
+    if local is None:
+        return False
+    return True
+
+
+@fixture(scope="session")
+def aws(session_id, using_ddb_local):
+    """
+        Returns a Boto3 Session object
+    """
+
+    if using_ddb_local:
+        return boto3.Session(
+            f"{constants.DYNAMODB_LOCAL_ACCESS_KEY_ID}_{session_id}",
+            constants.DYNAMODB_LOCAL_SECRET_ACCESS_KEY
+        )
+
     aws_config = helpers.load_test_json_file("extra", "aws")
 
     account_id = aws_config["account_id"]
@@ -58,6 +77,14 @@ def aws(session_id):
 
 
 @fixture(scope="session")
+def ddb_client(aws, using_ddb_local):
+    if using_ddb_local:
+        endpoint = os.environ[constants.DYNAMODB_LOCAL_ENVVAR]
+        return aws.client("dynamodb", endpoint_url=endpoint)
+    return aws.client("dynamodb")
+
+
+@fixture(scope="session")
 def session_unified_id(session_id, session_timestamp):
     """
         Returns a uuid based on the session timestamp
@@ -76,7 +103,7 @@ def table_id(session_unified_id):
 
 
 @fixture(scope="function")
-def ddb_table(request: FixtureRequest, table_id, aws):
+def ddb_table(request: FixtureRequest, table_id, ddb_client):
     """
         Returns a name of a ephemeral DynamoDB table
     """
@@ -85,7 +112,7 @@ def ddb_table(request: FixtureRequest, table_id, aws):
     table = helpers.get_ephemeral_table_name(table_id, function_name)
     args = helpers.get_function_table_data(function)
     args["TableName"] = table
-    ddb = helpers.get_byrne_client(aws)
+    ddb = helpers.get_byrne_client(ddb_client)
     ddb.client.create_table(**args)
     ddb.wait_for_active(table)
     yield table

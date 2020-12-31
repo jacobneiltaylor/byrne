@@ -97,16 +97,16 @@ def assert_dict_eq(dct_a, dct_b):
     assert len(diff) == 0
 
 
-def get_byrne_client(aws):
-    return DynamoDb(aws)
+def get_byrne_client(ddb_client):
+    return DynamoDb(ddb_client)
 
 
-def get_byrne_table(aws, name) -> Table:
-    return Table.get_table(get_byrne_client(aws), name)
+def get_byrne_table(ddb_client, name) -> Table:
+    return Table.get_table(get_byrne_client(ddb_client), name)
 
 
-def get_byrne_table_view(aws, name) -> TableView:
-    return TableView.get_default_table_view(get_byrne_table(aws, name))
+def get_byrne_table_view(ddb_client, name) -> TableView:
+    return TableView.get_default_table_view(get_byrne_table(ddb_client, name))
 
 
 def preload_table(table: Table, items):

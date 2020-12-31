@@ -13,6 +13,8 @@ python:
 
 install: pip install tox-travis
 
+before_script: ./scripts/run_dynamodb_local.sh
+
 script: tox
 
 deploy:

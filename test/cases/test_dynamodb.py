@@ -61,11 +61,11 @@ def test_complex_creation_arg_generation(table_id):
     helpers.assert_dict_eq(expected, generated)
 
 
-def test_basic_table_create_delete(table_id, aws):
+def test_basic_table_create_delete(table_id, ddb_client):
     """
         Test creation and deletion of a basic table
     """
-    client = helpers.get_byrne_client(aws)
+    client = helpers.get_byrne_client(ddb_client)
     table = helpers.get_ephemeral_table_name(table_id, "CreateDeleteBasic")
     table_def = _get_default_tabledef(table)
     client.create_table(table_def)
@@ -74,11 +74,11 @@ def test_basic_table_create_delete(table_id, aws):
     client.wait_for_deletion(table)
 
 
-def test_complex_table_create_delete(table_id, aws):
+def test_complex_table_create_delete(table_id, ddb_client):
     """
         Test creation and deletion of a complex table
     """
-    client = helpers.get_byrne_client(aws)
+    client = helpers.get_byrne_client(ddb_client)
     table = helpers.get_ephemeral_table_name(table_id, "CreateDeleteComplex")
     table_def = _get_complex_tabledef(table)
     client.create_table(table_def)
@@ -87,11 +87,11 @@ def test_complex_table_create_delete(table_id, aws):
     client.wait_for_deletion(table)
 
 
-def test_list_tables(aws, ddb_table):
+def test_list_tables(ddb_client, ddb_table):
     """
         Test listing of tables
     """
-    client = helpers.get_byrne_client(aws)
+    client = helpers.get_byrne_client(ddb_client)
     assert ddb_table in client.list_tables()
 
 

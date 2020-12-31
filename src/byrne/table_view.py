@@ -13,9 +13,8 @@ class TableView:
     """
         A high-level interface for DynamoDB Tables
         Supports the following features:
-            - Automatic expression synthesis for known keys
             - Attribute marshalling/unmarshalling
-            - Datatype and class mapping
+            - Object mapping
             - Result pagination
     """
 
