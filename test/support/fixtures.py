@@ -44,7 +44,8 @@ def aws(session_id, using_ddb_local):
     if using_ddb_local:
         return boto3.Session(
             f"{constants.DYNAMODB_LOCAL_ACCESS_KEY_ID}_{session_id}",
-            constants.DYNAMODB_LOCAL_SECRET_ACCESS_KEY
+            constants.DYNAMODB_LOCAL_SECRET_ACCESS_KEY,
+            region_name="us-east-1"
         )
 
     aws_config = helpers.load_test_json_file("extra", "aws")
