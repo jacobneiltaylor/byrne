@@ -18,15 +18,6 @@ class TableView:
             - Result pagination
     """
 
-    @dataclass
-    class SecondaryIndex:
-        name: str
-        definition: KeyDefinition
-        view: "TableView"
-
-        def query(self):
-            pass
-
     def __init__(
         self,
         table: Table,
@@ -41,16 +32,6 @@ class TableView:
         self.secondary_indexes = []
         self.page_length = page_length
         self.preload = True
-
-    def _make_index(self, name, definition):
-        return self.SecondaryIndex(name, definition, self)
-
-    def _build_secondary_indexes(self):
-        def _import_from_dict(dct: Dict[str, KeyDefinition]):
-            for k, v in dct.items():
-                self.secondary_indexes.append(self._make_index(k, v))
-        _import_from_dict(self.table.definition.lsi)
-        _import_from_dict(self.table.definition.gsi)
 
     def _postprocess_read_item(self, item: dict):
         if self.marshaller is not None:
@@ -85,12 +66,15 @@ class TableView:
             k: self.marshaller.pack_attribute(v) for k, v in values.items()
         }
 
-    def query(self, exp: Expression):
+    def query(self, exp: Expression, index: str = None):
         kwargs = {
             "key_condition_exp": exp.expression,
             "attr_names": exp.attr_name_args,
             "attr_values": self._map_exp_values(exp.attr_value_args)
         }
+
+        if index is not None:
+            kwargs["index"] = index
 
         paginator = QueryPaginator(
             self.table,
