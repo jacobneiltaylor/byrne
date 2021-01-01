@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="byrne",
-    version="0.3.0",
+    version="0.4.0",
     author="Jacob Neil Taylor",
     author_email="me@jacobtaylor.id.au",
     description="A intelligent DynamoDB frontend for Python3",
