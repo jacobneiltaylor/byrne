@@ -21,6 +21,7 @@ def test_table_view_scan(ddb_client, ddb_table):
     helpers.preload_table(view.table, data.ITEM_SET_SORTABLE)
 
     view.table.read_limit = 25
+    view.preload = False
 
     results = list(view.scan())
 

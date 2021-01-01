@@ -74,9 +74,6 @@ class Paginator(ABC):
         self._items = new_items + self._items
 
     def __iter__(self):
-        if self._eof and len(self._items) == 0:
-            raise RuntimeError("Paginator is empty")
-
         while (not self._eof) or len(self._items) > 0:
             if not self._eof and self.should_page and self.can_page:
                 self.trigger_page()
