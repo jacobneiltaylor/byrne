@@ -1,7 +1,4 @@
-from typing import Dict
-from dataclasses import dataclass
-
-from .datastructures import KeyDefinition, Expression
+from .datastructures import Expression
 from .table import Table
 from .marshallers import Marshaller, AutoMarshaller
 from .objectmaps import ObjectMap
