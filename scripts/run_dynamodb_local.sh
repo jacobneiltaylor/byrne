@@ -18,5 +18,5 @@ mkdir -p /tmp/dynamodb
 rm -rf /tmp/dynamodb/*
 tar -xf /tmp/$DDB_LOCAL_TARBALL_FILE -C /tmp/dynamodb
 
-echo "==> Spawning DyanmoDB..."
+echo "==> Spawning DyanmoDB Local..."
 java -Djava.library.path=/tmp/dynamodb/DynamoDBLocal_lib -jar /tmp/dynamodb/DynamoDBLocal.jar -inMemory -delayTransientStatuses &>/dev/null &
