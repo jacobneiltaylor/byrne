@@ -87,7 +87,7 @@ class TableView:
 
         if filter_exp is not None:
             kwargs = {
-                "filter_condition": filter_exp.expression,
+                "filter_exp": filter_exp.expression,
                 "attr_names": filter_exp.attr_name_args,
                 "attr_values": self._map_exp_values(filter_exp.attr_value_args)
             }
