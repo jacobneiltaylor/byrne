@@ -1,7 +1,7 @@
 from support import helpers
 
 from byrne import DynamoDb
-from byrne.datastructures import TableDefinition, KeyDefinition
+from byrne.datastructures import KeyDefinition, TableDefinition
 
 
 def _get_default_tabledef(name):
@@ -27,7 +27,7 @@ def _get_complex_tabledef(name):
 
 def test_name_normalisation(table_id):
     """
-        Ensure _normalise_table_name is working as expected
+    Ensure _normalise_table_name is working as expected
     """
     table = helpers.get_ephemeral_table_name(table_id, "DummyName")
     table_def = _get_default_tabledef(table)
@@ -39,7 +39,7 @@ def test_name_normalisation(table_id):
 
 def test_basic_creation_arg_generation(table_id):
     """
-        Test generation of args for create_table for a basic table
+    Test generation of args for create_table for a basic table
     """
     table = helpers.get_ephemeral_table_name(table_id, "DummyName")
     table_def = _get_default_tabledef(table)
@@ -51,7 +51,7 @@ def test_basic_creation_arg_generation(table_id):
 
 def test_complex_creation_arg_generation(table_id):
     """
-        Test generation of args for create_table for a complex table
+    Test generation of args for create_table for a complex table
     """
     table = helpers.get_ephemeral_table_name(table_id, "DummyName")
     table_def = _get_complex_tabledef(table)
@@ -63,7 +63,7 @@ def test_complex_creation_arg_generation(table_id):
 
 def test_basic_table_create_delete(table_id, ddb_client):
     """
-        Test creation and deletion of a basic table
+    Test creation and deletion of a basic table
     """
     client = helpers.get_byrne_client(ddb_client)
     table = helpers.get_ephemeral_table_name(table_id, "CreateDeleteBasic")
@@ -76,7 +76,7 @@ def test_basic_table_create_delete(table_id, ddb_client):
 
 def test_complex_table_create_delete(table_id, ddb_client):
     """
-        Test creation and deletion of a complex table
+    Test creation and deletion of a complex table
     """
     client = helpers.get_byrne_client(ddb_client)
     table = helpers.get_ephemeral_table_name(table_id, "CreateDeleteComplex")
@@ -89,7 +89,7 @@ def test_complex_table_create_delete(table_id, ddb_client):
 
 def test_list_tables(ddb_client, ddb_table):
     """
-        Test listing of tables
+    Test listing of tables
     """
     client = helpers.get_byrne_client(ddb_client)
     assert ddb_table in client.list_tables()

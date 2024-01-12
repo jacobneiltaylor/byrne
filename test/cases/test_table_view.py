@@ -1,4 +1,4 @@
-from support import helpers, data
+from support import data, helpers
 
 
 @helpers.use_table("sortable")
@@ -31,11 +31,7 @@ def test_table_view_scan(ddb_client, ddb_table):
 def test_table_view_get_item(ddb_client, ddb_table):
     view = helpers.get_byrne_table_view(ddb_client, ddb_table)
 
-    view.put_item({
-        "id": "1",
-        "name": "Tom Jones",
-        "age": 42
-    })
+    view.put_item({"id": "1", "name": "Tom Jones", "age": 42})
 
     item = view.get_item("1")
 
@@ -46,11 +42,7 @@ def test_table_view_get_item(ddb_client, ddb_table):
 def test_table_view_delete_item(ddb_client, ddb_table):
     view = helpers.get_byrne_table_view(ddb_client, ddb_table)
 
-    view.put_item({
-        "id": "1",
-        "name": "Tom Jones",
-        "age": 42
-    })
+    view.put_item({"id": "1", "name": "Tom Jones", "age": 42})
 
     item = view.get_item("1")
 
@@ -65,11 +57,7 @@ def test_table_view_delete_item(ddb_client, ddb_table):
 def test_table_view_update_item(ddb_client, ddb_table):
     view = helpers.get_byrne_table_view(ddb_client, ddb_table)
 
-    view.put_item({
-        "id": "1",
-        "name": "Tom Jones",
-        "age": 42
-    })
+    view.put_item({"id": "1", "name": "Tom Jones", "age": 42})
 
     item = view.get_item("1")
 

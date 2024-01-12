@@ -1,19 +1,22 @@
-from .helpers import set_optional_arg
-from .dynamodb import DynamoDb
-from .datastructures import TableDefinition
+from typing import Optional
+
 from .constants import DEFAULT_SELECT
+from .datastructures import TableDefinition
+from .dynamodb import DynamoDb
+from .helpers import set_optional_arg
 
 
 class Table:
     """
-        A low-level interface for interacting with DynamoDB Tables
+    A low-level interface for interacting with DynamoDB Tables
     """
+
     def __init__(
         self,
         interface: DynamoDb,
         definition: TableDefinition,
         consistent_reads=True,
-        read_limit=None
+        read_limit=None,
     ):
         self.definition = definition
         self.dynamodb = interface
@@ -30,17 +33,17 @@ class Table:
         select: str = DEFAULT_SELECT,
         scan_forward: bool = True,
         start=None,
-        index: str = None,
-        filter_exp: str = None,
-        projection_exp: str = None,
-        attr_names: dict = None,
-        attr_values: dict = None
+        index: Optional[str] = None,
+        filter_exp: Optional[str] = None,
+        projection_exp: Optional[str] = None,
+        attr_names: Optional[dict] = None,
+        attr_values: Optional[dict] = None,
     ):
         query_args = {
             "TableName": self.name,
             "KeyConditionExpression": key_condition_exp,
             "Select": select,
-            "ScanIndexForward": scan_forward
+            "ScanIndexForward": scan_forward,
         }
 
         set_optional_arg("Limit", self.read_limit, query_args)
@@ -57,16 +60,13 @@ class Table:
         self,
         select: str = DEFAULT_SELECT,
         start=None,
-        index: str = None,
-        filter_exp: str = None,
-        projection_exp: str = None,
-        attr_names: dict = None,
-        attr_values: dict = None
+        index: Optional[str] = None,
+        filter_exp: Optional[str] = None,
+        projection_exp: Optional[str] = None,
+        attr_names: Optional[dict] = None,
+        attr_values: Optional[dict] = None,
     ):
-        scan_args = {
-            "TableName": self.name,
-            "Select": select
-        }
+        scan_args = {"TableName": self.name, "Select": select}
 
         set_optional_arg("Limit", self.read_limit, scan_args)
         set_optional_arg("ExclusiveStartKey", start, scan_args)
@@ -81,8 +81,8 @@ class Table:
     def get_item(
         self,
         key: dict,
-        projection_exp: str = None,
-        attr_names: dict = None
+        projection_exp: Optional[str] = None,
+        attr_names: Optional[dict] = None,
     ):
         get_args = {
             "TableName": self.name,
@@ -98,14 +98,11 @@ class Table:
     def put_item(
         self,
         item: dict,
-        condition_exp: str = None,
-        attr_names: dict = None,
-        attr_values: dict = None
+        condition_exp: Optional[str] = None,
+        attr_names: Optional[dict] = None,
+        attr_values: Optional[dict] = None,
     ):
-        put_args = {
-            "TableName": self.name,
-            "Item": item
-        }
+        put_args = {"TableName": self.name, "Item": item}
 
         set_optional_arg("ConditionExpression", condition_exp, put_args)
         set_optional_arg("ExpressionAttributeNames", attr_names, put_args)
@@ -116,9 +113,9 @@ class Table:
     def delete_item(
         self,
         key: dict,
-        condition_exp: str = None,
-        attr_names: dict = None,
-        attr_values: dict = None
+        condition_exp: Optional[str] = None,
+        attr_names: Optional[dict] = None,
+        attr_values: Optional[dict] = None,
     ):
         delete_args = {
             "TableName": self.name,
@@ -135,9 +132,9 @@ class Table:
         self,
         key: dict,
         update_exp: str,
-        condition_exp: str = None,
-        attr_names: dict = None,
-        attr_values: dict = None
+        condition_exp: Optional[str] = None,
+        attr_names: Optional[dict] = None,
+        attr_values: Optional[dict] = None,
     ):
         update_args = {
             "TableName": self.name,

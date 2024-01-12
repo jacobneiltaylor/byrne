@@ -1,16 +1,15 @@
-import os
-import json
-import uuid
-import time
 import hashlib
+import json
+import os
+import time
+import uuid
 
-import pytest
 import deepdiff
+import pytest
 
 from byrne import DynamoDb, Table, TableView
 from byrne.datastructures import Expression
-
-from . import constants
+from support import constants
 
 
 def get_test_rootdir():
@@ -18,12 +17,7 @@ def get_test_rootdir():
 
 
 def open_test_data_file(subdir, filename):
-    return open(os.path.join(
-        get_test_rootdir(),
-        constants.FILE_DIR,
-        subdir,
-        filename
-    ))
+    return open(os.path.join(get_test_rootdir(), constants.FILE_DIR, subdir, filename))
 
 
 def load_test_json_file(subdir, name):
@@ -62,11 +56,7 @@ def make_params(data: dict):
 
 
 def get_ephemeral_table_name(session_name, test_name):
-    return "_".join([
-        constants.EPHEMERAL_TABLE_PREFIX,
-        session_name,
-        test_name
-    ])
+    return "_".join([constants.EPHEMERAL_TABLE_PREFIX, session_name, test_name])
 
 
 def get_short_hash(data: str):
@@ -118,4 +108,5 @@ def use_table(table):
     def decorator(func):
         func.table = table
         return func
+
     return decorator

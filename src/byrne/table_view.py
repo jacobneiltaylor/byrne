@@ -1,42 +1,39 @@
+from .constants import DEFAULT_PAGE, DEFAULT_SELECT  # noqa
 from .datastructures import Expression
-from .table import Table
-from .marshallers import Marshaller, AutoMarshaller
+from .marshallers import AutoMarshaller, Marshaller
 from .objectmaps import ObjectMap
 from .paginators import Paginator, QueryPaginator, ScanPaginator  # noqa
-from .constants import DEFAULT_SELECT, DEFAULT_PAGE  # noqa
+from .table import Table
+from typing import Optional
 
 
 class TableView:
     """
-        A high-level interface for DynamoDB Tables
-        Supports the following features:
-            - Attribute marshalling/unmarshalling
-            - Object mapping
-            - Result pagination
+    A high-level interface for DynamoDB Tables
+    Supports the following features:
+        - Attribute marshalling/unmarshalling
+        - Object mapping
+        - Result pagination
     """
 
     def __init__(
         self,
         table: Table,
-        marshaller: Marshaller = None,
-        objectmap: ObjectMap = None,
+        marshaller: Optional[Marshaller] = None,
+        objectmap: Optional[ObjectMap] = None,
         page_length: int = DEFAULT_PAGE,
-        preload=True
+        preload=True,
     ):
         self.table = table
         self.marshaller = marshaller
         self.objectmap = objectmap
-        self.secondary_indexes = []
+        self.secondary_indexes: list = []
         self.page_length = page_length
-        self.preload = True
+        self.preload = preload
 
     def _postprocess_read_item(self, item: dict):
         if self.marshaller is not None:
-            item = {
-                k: self.marshaller.unpack_attribute(v)
-                for k, v
-                in item.items()
-            }
+            item = {k: self.marshaller.unpack_attribute(v) for k, v in item.items()}
         if self.objectmap is not None:
             return self.objectmap.map_item(item)
         return item
@@ -45,9 +42,7 @@ class TableView:
         if self.objectmap is not None:
             data = self.objectmap.unmap_object(data)
         if self.marshaller is not None:
-            return {
-                k: self.marshaller.pack_attribute(v) for k, v in data.items()
-            }
+            return {k: self.marshaller.pack_attribute(v) for k, v in data.items()}
         return data
 
     @classmethod
@@ -59,45 +54,33 @@ class TableView:
             yield self._postprocess_read_item(item)
 
     def _map_exp_values(self, values):
-        return {
-            k: self.marshaller.pack_attribute(v) for k, v in values.items()
-        }
+        return {k: self.marshaller.pack_attribute(v) for k, v in values.items()}
 
-    def query(self, exp: Expression, index: str = None):
+    def query(self, exp: Expression, index: Optional[str] = None):
         kwargs = {
             "key_condition_exp": exp.expression,
             "attr_names": exp.attr_name_args,
-            "attr_values": self._map_exp_values(exp.attr_value_args)
+            "attr_values": self._map_exp_values(exp.attr_value_args),
         }
 
         if index is not None:
             kwargs["index"] = index
 
-        paginator = QueryPaginator(
-            self.table,
-            kwargs,
-            self.page_length,
-            self.preload
-        )
+        paginator = QueryPaginator(self.table, kwargs, self.page_length, self.preload)
 
         return self._generate_items(paginator)
 
-    def scan(self, filter_exp: Expression = None):
+    def scan(self, filter_exp: Optional[Expression] = None):
         kwargs = {}
 
         if filter_exp is not None:
             kwargs = {
                 "filter_exp": filter_exp.expression,
                 "attr_names": filter_exp.attr_name_args,
-                "attr_values": self._map_exp_values(filter_exp.attr_value_args)
+                "attr_values": self._map_exp_values(filter_exp.attr_value_args),
             }
 
-        paginator = ScanPaginator(
-            self.table,
-            kwargs,
-            self.page_length,
-            self.preload
-        )
+        paginator = ScanPaginator(self.table, kwargs, self.page_length, self.preload)
 
         return self._generate_items(paginator)
 
@@ -136,7 +119,7 @@ class TableView:
             "key": self._build_key_args(partition_key, sort_key),
             "update_exp": exp.expression,
             "attr_names": exp.attr_name_args,
-            "attr_values": self._map_exp_values(exp.attr_value_args)
+            "attr_values": self._map_exp_values(exp.attr_value_args),
         }
 
         self.table.update_item(**kwargs)

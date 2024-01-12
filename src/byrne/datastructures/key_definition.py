@@ -3,12 +3,7 @@ from typing import Dict, List
 
 from ..helpers import default
 
-
-_KEY_DATATYPES = [
-    "S",
-    "N",
-    "B"
-]
+_KEY_DATATYPES = ["S", "N", "B"]
 
 _PARTITION_KEY = "HASH"
 _SORT_KEY = "RANGE"
@@ -17,7 +12,7 @@ _SORT_KEY = "RANGE"
 @dataclass
 class KeyDefinition:
     partition_key: str
-    sort_key: str = None
+    sort_key: str | None = None
     projection: str = "ALL"
     include: List[str] = default(list)
 
@@ -30,12 +25,13 @@ class KeyDefinition:
     @property
     def attributes(self) -> List[str]:
         if self.is_sortable:
-            return [self.partition_key, self.sort_key]
+            return [self.partition_key, self.sort_key]  # type: ignore
         return [self.partition_key]
 
     def is_valid(self, attributes: Dict[str, str]) -> bool:
         def is_key_valid(key):
             return key in attributes and attributes[key] in _KEY_DATATYPES
+
         if self.is_sortable:
             return is_key_valid(self.partition_key) and is_key_valid(self.sort_key)  # noqa: E501
         return is_key_valid(self.partition_key)
@@ -46,6 +42,7 @@ class KeyDefinition:
                 "AttributeName": name,
                 "KeyType": "HASH" if partition else "RANGE",
             }
+
         schema = [get_schema_item(self.partition_key)]
         if self.is_sortable:
             schema.append(get_schema_item(self.sort_key, False))
@@ -73,6 +70,6 @@ class KeyDefinition:
             elif key_type == _SORT_KEY:
                 sort_key = key["AttributeName"]
 
-        assert(partition_key is not None)
+        assert partition_key is not None
 
         return cls(partition_key, sort_key)

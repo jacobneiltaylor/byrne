@@ -1,21 +1,21 @@
 import time
-from typing import List
+from typing import List, Optional
 
+from amazondax import AmazonDaxClient  # type: ignore
 from boto3 import Session
-from amazondax import AmazonDaxClient
 
-from .helpers import set_arg_if_not_empty
-from .datastructures import TableDefinition, KeyDefinition
 from .constants import DYNAMODB_RESVD_WORDS
+from .datastructures import KeyDefinition, TableDefinition
+from .helpers import set_arg_if_not_empty
 
 
 class DynamoDb:
-    def __init__(self, client, dax: AmazonDaxClient = None):
+    def __init__(self, client, dax: Optional[AmazonDaxClient] = None):
         self.client = client
         self.dax = dax
 
     def list_tables(self) -> List[str]:
-        return self.client .list_tables()["TableNames"]
+        return self.client.list_tables()["TableNames"]
 
     def get_table_definition(self, name):
         definition = TableDefinition()
@@ -32,9 +32,7 @@ class DynamoDb:
                 definition.attributes[attr_name] = attr["AttributeType"]
 
         if "KeySchema" in table:
-            definition.primary_key = KeyDefinition.from_key_schema(
-                table["KeySchema"]
-            )
+            definition.primary_key = KeyDefinition.from_key_schema(table["KeySchema"])
 
         indexes = (("Global", definition.gsi), ("Local", definition.lsi))
 
@@ -95,14 +93,14 @@ class DynamoDb:
         def get_attr_args(key_attribute: str):
             return {
                 "AttributeName": key_attribute,
-                "AttributeType": definition.attributes[key_attribute]
+                "AttributeType": definition.attributes[key_attribute],
             }
 
         def get_index_args(name: str, keydef: KeyDefinition):
             return {
                 "IndexName": name,
                 "KeySchema": keydef.to_key_schema(),
-                "Projection": keydef.to_projection_schema()
+                "Projection": keydef.to_projection_schema(),
             }
 
         attrs = [get_attr_args(item) for item in definition.key_attributes]
@@ -110,21 +108,13 @@ class DynamoDb:
         creation_args = {
             "AttributeDefinitions": attrs,
             "TableName": definition.name,
-            "KeySchema": definition.primary_key.to_key_schema(),
-            "BillingMode": "PAY_PER_REQUEST"
+            "KeySchema": definition.primary_key.to_key_schema(),  # type: ignore
+            "BillingMode": "PAY_PER_REQUEST",
         }
 
-        lsi = [
-            get_index_args(key, value)
-            for key, value
-            in definition.lsi.items()
-        ]
+        lsi = [get_index_args(key, value) for key, value in definition.lsi.items()]
 
-        gsi = [
-            get_index_args(key, value)
-            for key, value
-            in definition.gsi.items()
-        ]
+        gsi = [get_index_args(key, value) for key, value in definition.gsi.items()]
 
         set_arg_if_not_empty("LocalSecondaryIndexes", lsi, creation_args)
         set_arg_if_not_empty("GlobalSecondaryIndexes", gsi, creation_args)

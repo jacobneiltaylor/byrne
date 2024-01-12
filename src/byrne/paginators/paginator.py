@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
 from concurrent.futures import ThreadPoolExecutor
 
-
-from ..table import Table
 from ..constants import DEFAULT_PAGE
+from ..table import Table
 
 
 class Paginator(ABC):
@@ -12,10 +11,10 @@ class Paginator(ABC):
         table: Table,
         base_args: dict,
         page_length: int = DEFAULT_PAGE,
-        preload=True
+        preload=True,
     ):
         self.table = table
-        self._items = []
+        self._items: list = []
         self._eof = False
         self._executor = ThreadPoolExecutor()
         self._last_page = None

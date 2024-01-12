@@ -1,24 +1,23 @@
+from base64 import b64decode, b64encode
 from numbers import Number
-from base64 import b64encode, b64decode
 
-from .marshaller import Marshaller
-
+from ..constants import ENCODING, SET_SUBTYPES
 from ..helpers import autoclassifier
-from ..constants import SET_SUBTYPES, ENCODING
+from .marshaller import Marshaller
 
 
 class AutoMarshaller(Marshaller):
     """
-        This is the default Marshaller implementation.
+    This is the default Marshaller implementation.
 
-        This implementation uses datatype checking to infer DynamoDB
-        attribute types. This implementation can automatically pack
-        appropriate lists into set types if enabled. For example, if
-        a value to be packed is a list of strings, this will be stored
-        as a String Set.
+    This implementation uses datatype checking to infer DynamoDB
+    attribute types. This implementation can automatically pack
+    appropriate lists into set types if enabled. For example, if
+    a value to be packed is a list of strings, this will be stored
+    as a String Set.
 
-        Additionally, the casting of DynamoDB Numbers to Python types is
-        customisable.
+    Additionally, the casting of DynamoDB Numbers to Python types is
+    customisable.
     """
 
     _DEFAULT_CLASSIFIERS = {
@@ -28,7 +27,7 @@ class AutoMarshaller(Marshaller):
         "M": autoclassifier(dict),
         "L": autoclassifier(list),
         "NULL": autoclassifier(type(None)),
-        "BOOL": autoclassifier(bool)
+        "BOOL": autoclassifier(bool),
     }
 
     def __init__(self, auto_set_detect: bool = True, number_cast=float):
@@ -71,8 +70,8 @@ class AutoMarshaller(Marshaller):
 
     def pack_number(self, value: Number):
         try:
-            if int(value) == value:
-                value = int(value)
+            if int(value) == value:  # type: ignore
+                value = int(value)  # type: ignore
         finally:
             return str(value)
 

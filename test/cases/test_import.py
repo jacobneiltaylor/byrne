@@ -1,2 +1,2 @@
 def test_imports():
-    import byrne # noqa
+    import byrne  # noqa

@@ -6,15 +6,16 @@ from ..helpers import first_kvp
 
 class Marshaller(ABC):
     """
-        A Marshaller is responsible for translating between
-        the "packed" representation of attribute values from DynamoDB
-        and a "native" Python representation of that value and vice versa.
+    A Marshaller is responsible for translating between
+    the "packed" representation of attribute values from DynamoDB
+    and a "native" Python representation of that value and vice versa.
 
-        For example, consider the following attribute value from DDB:
-            {'BS': ['MQ==', 'Mg==', 'Mw==']}
-        This is represented in Python as:
-            [b"1", b"2", b"3"]
+    For example, consider the following attribute value from DDB:
+        {'BS': ['MQ==', 'Mg==', 'Mw==']}
+    This is represented in Python as:
+        [b"1", b"2", b"3"]
     """
+
     @abstractmethod
     def detect_attribute_type(self, value) -> str:
         raise NotImplementedError
@@ -35,7 +36,7 @@ class Marshaller(ABC):
     def pack_bool(self, value: bool):
         raise NotImplementedError
 
-    def pack_null(self, value: type(None)):
+    def pack_null(self, value: type[None]):
         return True
 
     def pack_string_set(self, value: list):
@@ -100,7 +101,7 @@ class Marshaller(ABC):
             "M": self.unpack_map,
             "L": self.unpack_list,
             "NULL": self.unpack_null,
-            "BOOL": self.unpack_bool
+            "BOOL": self.unpack_bool,
         }[attribute_type](attribute_value)
 
     def pack_attribute(self, value, force_type=None):
@@ -119,6 +120,6 @@ class Marshaller(ABC):
             "M": self.pack_map,
             "L": self.pack_list,
             "NULL": self.pack_null,
-            "BOOL": self.pack_bool
+            "BOOL": self.pack_bool,
         }[attribute_type](value)
         return {attribute_type: attribute_value}

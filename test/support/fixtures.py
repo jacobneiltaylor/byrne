@@ -2,15 +2,15 @@ import os
 import uuid
 
 import boto3
-from pytest import fixture, FixtureRequest
+from pytest import FixtureRequest, fixture
 
-from . import helpers, constants
+from support import constants, helpers
 
 
 @fixture(scope="session")
 def session_id():
     """
-        Returns a random uuid for a unique test session
+    Returns a random uuid for a unique test session
     """
     return helpers.get_uuid()
 
@@ -18,7 +18,7 @@ def session_id():
 @fixture(scope="session")
 def session_timestamp():
     """
-        Returns a timestamp for the test session
+    Returns a timestamp for the test session
     """
     return helpers.get_timestamp()
 
@@ -26,7 +26,7 @@ def session_timestamp():
 @fixture(scope="session")
 def using_ddb_local():
     """
-        Returns a timestamp for the test session
+    Returns a timestamp for the test session
     """
     local = os.environ.get(constants.DYNAMODB_LOCAL_ENVVAR, None)
 
@@ -38,14 +38,14 @@ def using_ddb_local():
 @fixture(scope="session")
 def aws(session_id, using_ddb_local):
     """
-        Returns a Boto3 Session object
+    Returns a Boto3 Session object
     """
 
     if using_ddb_local:
         return boto3.Session(
-            f"{constants.DYNAMODB_LOCAL_ACCESS_KEY_ID}_{session_id}",
+            constants.DYNAMODB_LOCAL_ACCESS_KEY_ID,
             constants.DYNAMODB_LOCAL_SECRET_ACCESS_KEY,
-            region_name="us-east-1"
+            region_name="us-east-1",
         )
 
     aws_config = helpers.load_test_json_file("extra", "aws")
@@ -60,7 +60,7 @@ def aws(session_id, using_ddb_local):
     assume_role_args = {
         "RoleArn": f"arn:aws:iam::{account_id}:role/{role_name}",
         "RoleSessionName": str(session_id),
-        "DurationSeconds": aws_config["role_duration"]
+        "DurationSeconds": aws_config["role_duration"],
     }
 
     if external_id is not None:
@@ -73,12 +73,12 @@ def aws(session_id, using_ddb_local):
         aws_access_key_id=creds["AccessKeyId"],
         aws_secret_access_key=creds["SecretAccessKey"],
         aws_session_token=creds["SessionToken"],
-        region_name=region
+        region_name=region,
     )
 
 
 @fixture(scope="session")
-def ddb_client(aws, using_ddb_local):
+def ddb_client(aws: boto3.Session, using_ddb_local):
     if using_ddb_local:
         endpoint = os.environ[constants.DYNAMODB_LOCAL_ENVVAR]
         return aws.client("dynamodb", endpoint_url=endpoint)
@@ -88,8 +88,8 @@ def ddb_client(aws, using_ddb_local):
 @fixture(scope="session")
 def session_unified_id(session_id, session_timestamp):
     """
-        Returns a uuid based on the session timestamp
-        and random session id
+    Returns a uuid based on the session timestamp
+    and random session id
     """
     return uuid.uuid5(session_id, str(session_timestamp))
 
@@ -97,8 +97,8 @@ def session_unified_id(session_id, session_timestamp):
 @fixture(scope="session")
 def table_id(session_unified_id):
     """
-        Returns a short string based on the session id
-        and timestamp for use in ephemeral table names.
+    Returns a short string based on the session id
+    and timestamp for use in ephemeral table names.
     """
     return helpers.get_short_hash(str(session_unified_id))
 
@@ -106,7 +106,7 @@ def table_id(session_unified_id):
 @fixture(scope="function")
 def ddb_table(request: FixtureRequest, table_id, ddb_client):
     """
-        Returns a name of a ephemeral DynamoDB table
+    Returns a name of a ephemeral DynamoDB table
     """
     function = request.function
     function_name = function.__name__
