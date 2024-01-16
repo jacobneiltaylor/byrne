@@ -19,10 +19,10 @@ jobs:
     steps:
       - name: Retrieve source
         uses: actions/checkout@v4
-      - name: Install Python
-        run: pyenv install -s ${{ matrix.python-version }} && pyenv global ${{ matrix.python-version }} && pip3 install poetry
-      - name: Display Python version
-        run: python3 -c "import sys; print(sys.version)"
+      - name: Set Python version
+        run: pyenv install -s ${{ matrix.python-version }} && pyenv global ${{ matrix.python-version }}
+      - name: Install Poetry
+        run: just install-poetry
       - name: Run test suite against DynamoDB Local
         run: just remote-unit
         env:

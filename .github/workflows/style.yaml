@@ -10,7 +10,7 @@ jobs:
       - name: Retrieve source
         uses: actions/checkout@v4
       - name: Install Poetry
-        run: pip3 install poetry
+        run: just install-poetry
       - name: Lint Python files
         run: just lint
       - name: Typecheck Python package

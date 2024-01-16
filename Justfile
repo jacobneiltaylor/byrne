@@ -26,4 +26,8 @@ remote-unit: install
 publish: install
     poetry publish -r pypi --build
 
+install-poetry:
+    pip3 install poetry
+    poetry self add poetry-git-version-plugin
+
 test: lint typecheck unit

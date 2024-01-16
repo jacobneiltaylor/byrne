@@ -22,7 +22,7 @@ jobs:
       - name: Retrieve source
         uses: actions/checkout@v4
       - name: Install Poetry
-        run: pip3 install poetry
+        run: just install-poetry
       - name: Run test suite against DynamoDB
         run: just remote-unit
         env:

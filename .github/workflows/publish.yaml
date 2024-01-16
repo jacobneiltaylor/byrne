@@ -12,7 +12,7 @@ jobs:
       - name: Retrieve source
         uses: actions/checkout@v4
       - name: Install Poetry
-        run: pip3 install poetry
+        run: just install-poetry
       - name: Add Poetry plugin
         run: poetry self add poetry-git-version-plugin
       - name: Publish package to PyPI
