@@ -1,8 +1,18 @@
-name: Run test suite across multiple Python versions
+name: Test and build Python Package
 on: [push]
 
 jobs:
-  build:
+  linting:
+    name: Lint Python package
+    runs-on: ubuntu-latest
+    container: jacobneiltaylor/builder:22.04
+    steps:
+      - name: Retrieve source
+        uses: actions/checkout@v4
+      - name: Lint Python files
+        run: just lint
+  version-testing:
+    name: Test Python package across supported Python versions
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -13,7 +23,6 @@ jobs:
         image: amazon/dynamodb-local:latest
         ports:
           - 8000:8000
-
     steps:
       - name: Retrieve source
         uses: actions/checkout@v4
