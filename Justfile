@@ -18,6 +18,9 @@ debug-lint:
     poetry run ruff check --show-source -e {{ justfile_directory() }}/src {{ justfile_directory() }}/test
 
 unit: install
-    poetry run tox -e test_local -- -- --cov={{ justfile_directory() }}/src/byrne
+    poetry run tox -e unit -- -- --cov={{ justfile_directory() }}/src/byrne
+
+remote-unit: install
+    poetry run tox -e remote_unit -- -- --cov={{ justfile_directory() }}/src/byrne
 
 test: lint types unit
