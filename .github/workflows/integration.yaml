@@ -1,0 +1,29 @@
+name: AWS Integration Testing
+
+on:
+  workflow_call: {}
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  aws:
+    name: Test Byrne against AWS
+    runs-on: ubuntu-latest
+    container: jacobneiltaylor/builder:22.04
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1.7.0
+        with:
+          role-to-assume: arn:aws:iam::765587336854:role/ByrneGithubActionsRunnerRole
+          role-session-name: GitHubActions-ByrneTest-${{github.run_id}}
+          aws-region: us-east-1
+      - name: Retrieve source
+        uses: actions/checkout@v4
+      - name: Install Poetry
+        run: pip3 install poetry
+      - name: Run test suite against DynamoDB
+        run: just remote-unit
+        env:
+          BYRNE_TEST_STS_EXTERNAL_ID: ${{ secrets.BYRNE_TEST_STS_EXTERNAL_ID }}

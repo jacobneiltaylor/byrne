@@ -1,0 +1,21 @@
+name: PyPI Package Publishing
+
+on:
+  workflow_call: {}
+
+jobs:
+  publish:
+    name: Publish Byrne to PyPI
+    runs-on: ubuntu-latest
+    container: jacobneiltaylor/builder:22.04
+    steps:
+      - name: Retrieve source
+        uses: actions/checkout@v4
+      - name: Install Poetry
+        run: pip3 install poetry
+      - name: Add Poetry plugin
+        run: poetry self add poetry-git-version-plugin
+      - name: Publish package to PyPI
+        run: just publish
+        env:
+          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.POETRY_PYPI_TOKEN_PYPI }}

@@ -1,0 +1,14 @@
+name: Main Branch Push Workflow
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  style:
+    uses: ./.github/workflows/style.yaml
+  unit:
+    uses: ./.github/workflows/unit.yaml
+  integration:
+    uses: ./.github/workflows/integration.yaml
+    needs: ["unit"]

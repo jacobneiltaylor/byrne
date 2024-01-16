@@ -11,7 +11,7 @@ format: install
 lint: install
     poetry run ruff check {{ justfile_directory() }}/src {{ justfile_directory() }}/test
 
-types: install
+typecheck: install
     poetry run mypy {{ justfile_directory() }}/src
 
 debug-lint:
@@ -23,4 +23,7 @@ unit: install
 remote-unit: install
     poetry run tox -e remote_unit -- -- --cov={{ justfile_directory() }}/src/byrne
 
-test: lint types unit
+publish: install
+    poetry publish -r pypi --build
+
+test: lint typecheck unit
