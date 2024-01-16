@@ -41,7 +41,7 @@ jobs:
         run: pyenv install -s ${{ matrix.python-version }} && pyenv global ${{ matrix.python-version }} && pip3 install poetry
       - name: Display Python version
         run: python3 -c "import sys; print(sys.version)"
-      - name: Run test suite
+      - name: Run test suite against DynamoDB Local
         run: just remote-unit
         env:
           BYRNE_TEST_DYANMODB_LOCAL: http://dynamodb:8000
@@ -55,12 +55,12 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::765587336854:role/ByrneGithubActionsRunnerRole
           role-session-name: GitHubActions-ByrneTest-${{github.run_id}}
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: us-east-1
       - name: Retrieve source
         uses: actions/checkout@v4
       - name: Install Poetry
         run: pip3 install poetry
-      - name: Lint Python files
+      - name: Run test suite against DynamoDB
         run: just remote-unit
-    env:
-      AWS_REGION: us-east-1
+        env:
+          BYRNE_TEST_STS_EXTERNAL_ID: ${{ secrets.BYRNE_TEST_STS_EXTERNAL_ID }}
