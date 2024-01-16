@@ -1,0 +1,20 @@
+name: Python package
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["pypy3.10", "3.10", "3.11", "3.12"]
+    container: jacobneiltaylor/builder:22.04
+    steps:
+      - name: Retrieve source
+        uses: actions/checkout@v4
+      - name: Install Python
+        run: pyenv -s ${{ matrix.python-version }} && pyenv global ${{ matrix.python-version }} && pip3 install poetry
+      - name: Display Python version
+        run: python3 -c "import sys; print(sys.version)"
+      - name: Run test suite
+        run: just test
