@@ -9,10 +9,12 @@ jobs:
     steps:
       - name: Retrieve source
         uses: actions/checkout@v4
+      - name: Install Poetry
+        run: pip3 install poetry
       - name: Lint Python files
         run: just lint
-  version-testing:
-    name: Test Python package across supported Python versions
+  local-testing:
+    name: Test Python package locally
     runs-on: ubuntu-latest
     strategy:
       matrix:
