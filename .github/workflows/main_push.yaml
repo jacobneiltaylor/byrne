@@ -4,6 +4,10 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   style:
     uses: ./.github/workflows/style.yaml
@@ -11,4 +15,5 @@ jobs:
     uses: ./.github/workflows/unit.yaml
   integration:
     uses: ./.github/workflows/integration.yaml
+    secrets: inherit
     needs: ["unit"]

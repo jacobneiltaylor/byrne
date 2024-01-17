@@ -3,6 +3,10 @@ on:
     tags:
       - 'v*.*.*'
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   style:
     uses: ./.github/workflows/style.yaml
@@ -10,10 +14,12 @@ jobs:
     uses: ./.github/workflows/unit.yaml
   integration:
     uses: ./.github/workflows/integration.yaml
+    secrets: inherit
     needs:
       - unit
   publish:
     uses: ./.github/workflows/publish.yaml
+    secrets: inherit
     needs:
       - integration
       - style
