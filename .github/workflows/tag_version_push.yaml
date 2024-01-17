@@ -1,3 +1,5 @@
+name: Version Tag Push Workflow
+
 on:
   push:
     tags:

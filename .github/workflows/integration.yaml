@@ -14,7 +14,7 @@ jobs:
     container: jacobneiltaylor/builder:22.04
     steps:
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1.7.0
+        uses: aws-actions/configure-aws-credentials@v4.0.1
         with:
           role-to-assume: arn:aws:iam::765587336854:role/ByrneGithubActionsRunnerRole
           role-session-name: GitHubActions-ByrneTest-${{github.run_id}}
