@@ -67,4 +67,4 @@ ignore_errors = true
 directory = "test-reports/coverage_html"
 
 [tool.poetry-git-version-plugin]
-version_format = '{version}+{commit_hash}'
+version_format = '{version}'
