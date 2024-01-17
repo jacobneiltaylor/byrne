@@ -17,9 +17,8 @@ jobs:
     uses: ./.github/workflows/integration.yaml
     secrets: inherit
     needs: ["unit"]
-  publish:
-    uses: ./.github/workflows/publish.yaml
-    secrets: inherit
+  build:
+    uses: ./.github/workflows/build.yaml
     needs:
       - integration
       - style
