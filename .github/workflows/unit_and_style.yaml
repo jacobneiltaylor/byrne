@@ -1,11 +1,27 @@
-name: Unit Testing
+name: Unit and Style Testing
 
 on:
+  pull_request:
+    branches: [ main ]
   workflow_call: {}
 
 jobs:
-  local-testing:
-    name: Test Python package locally
+  style:
+    name: Ensure style guide conformance
+    runs-on: ubuntu-latest
+    container: jacobneiltaylor/builder:22.04
+    steps:
+      - name: Retrieve source
+        uses: actions/checkout@v4
+      - name: Install Poetry
+        run: just install-poetry
+      - name: Lint Python files
+        run: just lint
+      - name: Typecheck Python package
+        run: just typecheck
+
+  unit:
+    name: Run unit tests
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -27,3 +43,4 @@ jobs:
         run: just remote-unit
         env:
           BYRNE_TEST_DYANMODB_LOCAL: http://dynamodb:8000
+

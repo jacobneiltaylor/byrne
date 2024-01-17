@@ -1,6 +1,8 @@
-name: AWS Integration Testing
+name: Unit, Style, and Integration Testing with Build
 
 on:
+  push:
+    branches: [ main ]
   workflow_call: {}
 
 permissions:
@@ -8,7 +10,10 @@ permissions:
   contents: read
 
 jobs:
-  aws:
+  unit_and_style:
+    name: Run local tests and style checks
+    uses: ./.github/workflows/unit_and_style.yaml
+  integration:
     name: Test Byrne against AWS
     runs-on: ubuntu-latest
     container: jacobneiltaylor/builder:22.04
@@ -27,3 +32,23 @@ jobs:
         run: just remote-unit
         env:
           BYRNE_TEST_STS_EXTERNAL_ID: ${{ secrets.BYRNE_TEST_STS_EXTERNAL_ID }}
+    needs:
+      - "unit_and_style"
+  build:
+    name: Build Byrne package
+    runs-on: ubuntu-latest
+    container: jacobneiltaylor/builder:22.04
+    steps:
+      - name: Retrieve source
+        uses: actions/checkout@v4
+      - name: Install Poetry
+        run: just install-poetry
+      - name: Build package
+        run: just build
+      - name: Export package as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-dists
+          path: dist/byrne*
+    needs:
+      - integration
