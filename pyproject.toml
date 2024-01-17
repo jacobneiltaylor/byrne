@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "byrne"
-version = "0.0.0a34"
+version = "1.0.0+b8535d5"
 description = "A intelligent DynamoDB frontend for Python 3"
 authors = ["Jacob Neil Taylor <me@jacobtaylor.id.au>"]
 license = "MIT"
