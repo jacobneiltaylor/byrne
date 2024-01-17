@@ -27,7 +27,7 @@ build: install
     poetry build
 
 publish: build
-    poetry publish -r pypi --skip-existing
+    poetry publish --skip-existing
 
 sync-version:
     poetry set-git-version
