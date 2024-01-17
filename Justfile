@@ -23,8 +23,14 @@ unit: install
 remote-unit: install
     poetry run tox -e remote_unit -- -- --cov={{ justfile_directory() }}/src/byrne
 
-publish: install
-    poetry publish -r pypi --build
+build: install
+    poetry build
+
+publish: build
+    poetry publish -r pypi --skip-existing
+
+sync-version:
+    poetry set-git-version
 
 install-poetry:
     pip3 install poetry

@@ -1,11 +1,11 @@
-name: Linting and Type Checking
+name: Build Package
 
 on:
   workflow_call: {}
 
 jobs:
-  style:
-    name: Lint Python package
+  build:
+    name: Build Byrne package
     runs-on: ubuntu-latest
     container: jacobneiltaylor/builder:22.04
     steps:
@@ -13,7 +13,9 @@ jobs:
         uses: actions/checkout@v4
       - name: Install Poetry
         run: just install-poetry
-      - name: Lint Python files
-        run: just lint
-      - name: Typecheck Python package
-        run: just typecheck
+      - name: Build package
+        run: just build
+      - name: Export package as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: dist/byrne*
